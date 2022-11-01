@@ -49,7 +49,7 @@ while (True):
     # WARNING! If you try to read any other ADC channel during this continuous
     # conversion (like by calling read_adc again) it will disable the
     # continuous conversion!
-    print('Channel 0: {0} -> {1}'.format(value, 1000*(value/12600)))
+    print('Channel 0: {0} -> {1}'.format(value, (value/12.6)))
     # Sleep for half a second.
     time.sleep(0.5)
 

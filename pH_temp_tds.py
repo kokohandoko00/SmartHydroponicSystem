@@ -28,6 +28,7 @@ def read_temp_raw():
 
 def read_temp():
     while True:
+      #temperature
       lines = read_temp_raw()
       while lines[0].strip()[-3:] != 'YES':
           time.sleep(0.2)
@@ -37,6 +38,7 @@ def read_temp():
           temp_string = lines[1][equals_pos+2:]
           temp_c = float(temp_string) / 1000.0
           temp_f = temp_c * 9.0 / 5.0 + 32.0
+      #pH
       channel = AnalogIn(ads, ADS.P1)
       buf = list()
       for i in range(10): # Take 10 samples
@@ -45,7 +47,14 @@ def read_temp():
       buf = buf[2:-2]
       avg = round((sum(map(float,buf))/6),2) # Get average value from remaining 6
       pH= round((-8.475*avg+38.7575),2)
-      tds=adc.get_last_result()
+      #tds
+      channel1 = AnalogIn(ads, ADS.P0)
+      buff = list()
+      for i in range(10): # Take 10 samples
+          buff.append(channel1.voltage)
+      buff.sort() # Sort samples and discard highest and lowest
+      buff = buff[2:-2]
+      tds = round((sum(map(float,buff))/6),2)
       print("Suhu dalam Celcius={}".format(temp_c))
       print("Suhu dalam Fahrenheit={}".format(temp_f))
       print("pH Air={}".format(pH))
