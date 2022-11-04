@@ -9,7 +9,7 @@ from adafruit_ads1x15.analog_in import AnalogIn
 
 
 i2c = busio.I2C(board.SCL, board.SDA)
-ads = ADS.ADS1115(i2c)
+ads = ADS.ADS1115(i2c, mode = 0)
 
 channel_0 = AnalogIn(ads, ADS.P0)
 channel_1 = AnalogIn(ads, ADS.P1)
@@ -41,21 +41,21 @@ def read_temp():
           temp_f = temp_c * 9.0 / 5.0 + 32.0
       #pH
       
-      buf = list()
+      buf_1 = list()
       for i in range(10): # Take 10 samples
-          buf.append(channel_1.voltage)
-      buf.sort() # Sort samples and discard highest and lowest
-      buf = buf[2:-2]
-      avg = round((sum(map(float,buf))/6),2) # Get average value from remaining 6
+          buf_1.append(channel_1.voltage)
+      buf_1.sort() # Sort samples and discard highest and lowest
+      buf_1 = buf_1[2:-2]
+      avg = round((sum(map(float,buf_1))/6),2) # Get average value from remaining 6
       pH= round((-8.475*avg+38.7575),2)
       #tds
       
-      buff = list()
+      buf_0 = list()
       for i in range(10): # Take 10 samples
-          buff.append(channel_0.voltage)
-      buff.sort() # Sort samples and discard highest and lowest
-      buff = buff[2:-2]
-      tds = round((sum(map(float,buff))/6),2)
+          buf_0.append(channel_0.voltage)
+      buf_0.sort() # Sort samples and discard highest and lowest
+      buf_0 = buf_0[2:-2]
+      tds = round((sum(map(float,buf_0))/6),2)
       print("Suhu dalam Celcius={}".format(temp_c))
       print("Suhu dalam Fahrenheit={}".format(temp_f))
       print("pH Air={}".format(pH))
