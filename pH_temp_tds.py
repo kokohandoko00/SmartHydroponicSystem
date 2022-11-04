@@ -59,7 +59,8 @@ def read_temp():
           buf_0.append(channel_0.voltage)
       buf_0.sort() # Sort samples and discard highest and lowest
       buf_0 = buf_0[2:-2]
-      tds = round((sum(map(float,buf_0))/6),2)
+      raw = round((sum(map(float,buf_0))/6),2)
+      tds = round((407.27*raw+56.2642),2)
       print("Suhu dalam Celcius={}".format(temp_c))
       print("Suhu dalam Fahrenheit={}".format(temp_f))
       print("pH Air={}".format(pH))
