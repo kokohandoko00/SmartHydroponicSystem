@@ -11,7 +11,8 @@ from adafruit_ads1x15.analog_in import AnalogIn
 i2c = busio.I2C(board.SCL, board.SDA)
 ads = ADS.ADS1115(i2c)
 
-
+channel_0 = AnalogIn(ads, ADS.P0)
+channel_1 = AnalogIn(ads, ADS.P1)
 
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
@@ -28,7 +29,9 @@ def read_temp_raw():
 
 def read_temp():
     while True:
+      
       #temperature
+      
       lines = read_temp_raw()
       while lines[0].strip()[-3:] != 'YES':
           time.sleep(0.2)
@@ -38,10 +41,9 @@ def read_temp():
           temp_string = lines[1][equals_pos+2:]
           temp_c = float(temp_string) / 1000.0
           temp_f = temp_c * 9.0 / 5.0 + 32.0
-      #pH
-
       
-      channel_1 = AnalogIn(ads, ADS.P1)
+      
+      #pH
       
       buf_1 = list()
       for i in range(10): # Take 10 samples
@@ -50,10 +52,10 @@ def read_temp():
       buf_1 = buf_1[2:-2]
       avg = round((sum(map(float,buf_1))/6),2) # Get average value from remaining 6
       pH= round((-8.475*avg+38.7575),2)
+      
+    
       #tds
 
-      channel_0 = AnalogIn(ads, ADS.P0)
-      
       buf_0 = list()
       for i in range(10): # Take 10 samples
           buf_0.append(channel_0.voltage)
