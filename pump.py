@@ -15,6 +15,7 @@ while(True):
       print("ONE")
       time.sleep(2)
     if pH>=9:
+      #case if two relay channel activated
       GPIO.setup(27, GPIO.OUT) 
       GPIO.output(27, GPIO.HIGH)
       GPIO.output(27, GPIO.LOW)
@@ -23,6 +24,12 @@ while(True):
       GPIO.output(22, GPIO.LOW)
       print("TWO")
       time.sleep(2)
+      #case if only one relay channel activated. with this option, it should have configured on wire
+      # GPIO.setup(27, GPIO.OUT) 
+      # GPIO.output(27, GPIO.HIGH)
+      # GPIO.output(27, GPIO.LOW)
+      # print("TWO")
+      # time.sleep(2)
 
 
   except KeyboardInterupt:
