@@ -8,7 +8,8 @@ from config import config
 import io
 
 camera = picamera.PiCamera()
-camera.resolution = (1280, 720)
+camera.resolution = (320, 180)
+camera.start_preview()
 
 client = TBDeviceMqttClient(config.THINGSBOARD_HOST, port=config.THINGSBOARD_MQTT_PORT, username=config.THINGSBOARD_MQTT_USERNAME, password=config.THINGSBOARD_MQTT_PASSWORD, client_id=config.THINGSBOARD_MQTT_CLIENT_ID)
 # Connect to ThingsBoard
@@ -21,7 +22,9 @@ while True:
     camera_output_encoded = base64.b64encode(camera_output.getvalue())
 
     telemetry = {
-        "camera_encoded" : camera_output_encoded,
+        "camera_encoded" : camera_output_encoded.decode(),
     }
 
-    client.send_telemetry(telemetry) 
+    client.send_telemetry(telemetry)
+    print("test")
+    time.sleep(2.0) 
