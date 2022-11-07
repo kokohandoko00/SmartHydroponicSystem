@@ -20,9 +20,9 @@ while True:
     camera_output = io.BytesIO()
     camera.capture(camera_output, format="jpeg")
 
-    image = Image.frombytes(camera_output)
+    image = Image.open(camera_output)
     image = image.resize((320,180), Image.ANTIALIAS)
-    
+
     camera_output = io.BytesIO()
     image.save(camera_output, optimize=True, quality=70)
 
