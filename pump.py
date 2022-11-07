@@ -6,9 +6,12 @@ GPIO.setmode(GPIO.BCM)
 tds=1000
 pH=7
 
+# ph=7
+# tds=1050<=tds<=1400
+
 while(True):
   try:
-    if tds<=1000:
+    if tds<=1050:
       GPIO.setup(17, GPIO.OUT) 
       GPIO.output(17, GPIO.HIGH)
       GPIO.output(17, GPIO.LOW)
