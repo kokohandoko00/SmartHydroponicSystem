@@ -5,7 +5,7 @@ from datetime import datetime
 import base64
 from tb_device_mqtt import TBDeviceMqttClient, TBPublishInfo
 from config import config
-from io import StringIO
+import io
 
 camera = picamera.PiCamera()
 camera.resolution = (1280, 720)
@@ -15,7 +15,7 @@ client = TBDeviceMqttClient(config.THINGSBOARD_HOST, port=config.THINGSBOARD_MQT
 client.connect()
 
 while True:
-    camera_output = StringIO.StringIO()
+    camera_output = io.BytesIO()
     camera.capture(camera_output, format="jpeg")
 
     camera_output_encoded = base64.b64encode(camera_output.getvalue())
