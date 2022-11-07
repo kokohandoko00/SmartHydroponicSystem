@@ -7,6 +7,7 @@ import sys
 import adafruit_ads1x15.ads1115 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
 from config import config
+import RPi.GPIO as GPIO
 
 from tb_device_mqtt import TBDeviceMqttClient, TBPublishInfo
 
@@ -24,6 +25,32 @@ os.system('modprobe w1-therm')
 base_dir = '/sys/bus/w1/devices/'
 device_folder = glob.glob(base_dir + '28-030794972bbe')[0]
 device_file = device_folder + '/w1_slave'
+
+GPIO.setmode(GPIO.BCM)
+
+def pump(ppm,base):
+    if ppm<=1050:
+      GPIO.setup(17, GPIO.OUT) 
+      GPIO.output(17, GPIO.HIGH)
+      GPIO.output(17, GPIO.LOW)
+      print("ONE")
+      time.sleep(2)
+    if base>=7:
+      #case if two relay channel activated
+      GPIO.setup(27, GPIO.OUT) 
+      GPIO.output(27, GPIO.HIGH)
+      GPIO.output(27, GPIO.LOW)
+      GPIO.setup(22, GPIO.OUT) 
+      GPIO.output(22, GPIO.HIGH)
+      GPIO.output(22, GPIO.LOW)
+      print("TWO")
+      time.sleep(2)
+      #case if only one relay channel activated. with this option, it should have configured on wire
+      # GPIO.setup(27, GPIO.OUT) 
+      # GPIO.output(27, GPIO.HIGH)
+      # GPIO.output(27, GPIO.LOW)
+      # print("TWO")
+      # time.sleep(2)
 
 def read_temp_raw():
     f = open(device_file, 'r')
@@ -66,7 +93,7 @@ def read_temp():
       buf_0.sort() # Sort samples and discard highest and lowest
       buf_0 = buf_0[2:-2]
       raw = round((sum(map(float,buf_0))/6),2)
-      #tds = round((407.27*raw+56.2642),2)
+      tds = round((407.27*raw+56.2642),2)
       
       print("Suhu dalam Celcius={}".format(temp_c))
       print("Suhu dalam Fahrenheit={}".format(temp_f))
@@ -80,6 +107,7 @@ def read_temp():
       }
 
       client.send_telemetry(telemetry)
+      pump(tds,pH)
       time.sleep(2)
 
 while True:
