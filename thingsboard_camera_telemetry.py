@@ -21,10 +21,10 @@ while True:
     camera.capture(camera_output, format="jpeg")
 
     image = Image.open(camera_output)
-    image = image.resize((320,180), Image.ANTIALIAS)
+    # image = image.resize((320,180), Image.ANTIALIAS)
 
     camera_output = io.BytesIO()
-    image.save(camera_output, optimize=True, quality=70, format="jpeg")
+    image.save(camera_output, optimize=True, quality=60, format="jpeg")
 
     camera_output_encoded = base64.b64encode(camera_output.getvalue())
 
