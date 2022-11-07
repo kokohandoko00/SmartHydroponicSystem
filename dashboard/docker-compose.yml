@@ -1,0 +1,32 @@
+version: '3.9'
+services:
+  thingsboard:
+    restart: unless-stopped
+    image: "thingsboard/tb-postgres"
+    ports:
+      - "8080:9090"
+      - "1883:1883"
+      - "7070:7070"
+      - "5683-5688:5683-5688/udp"
+    environment:
+      TB_QUEUE_TYPE: rabbitmq
+      TB_QUEUE_RABBIT_MQ_USERNAME: capstone
+      TB_QUEUE_RABBIT_MQ_PASSWORD: dteti@2022
+      TB_QUEUE_RABBIT_MQ_HOST: rabbitmq
+      TB_QUEUE_RABBIT_MQ_PORT: 5672
+    volumes:
+      - ${PWD}/.tb/data:/data
+      - ${PWD}/.tb/logs:/var/log/thingsboard
+
+  rabbitmq:
+    restart: unless-stopped
+    image: "rabbitmq:latest"
+    ports:
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: capstone
+      RABBITMQ_DEFAULT_PASS: dteti@2022
+    # volumes:
+    #   - ${PWD}/rabbitmq/data/:/var/lib/rabbitmq/
+    #   - ${PWD}/rabbitmq/log/:/var/log/rabbitmq

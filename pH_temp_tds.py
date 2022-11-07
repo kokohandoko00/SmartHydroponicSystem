@@ -6,7 +6,11 @@ import busio
 import sys
 import adafruit_ads1x15.ads1115 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
+from config import config
 
+from tb_device_mqtt import TBDeviceMqttClient, TBPublishInfo
+
+client = TBDeviceMqttClient(config.THINGSBOARD_HOST, port=config.THINGSBOARD_MQTT_PORT, username=config.THINGSBOARD_MQTT_USERNAME, password=config.THINGSBOARD_MQTT_PASSWORD, client_id=config.THINGSBOARD_MQTT_CLIENT_ID)
 
 i2c = busio.I2C(board.SCL, board.SDA)
 ads = ADS.ADS1115(i2c)
@@ -63,10 +67,19 @@ def read_temp():
       buf_0 = buf_0[2:-2]
       raw = round((sum(map(float,buf_0))/6),2)
       tds = round((407.27*raw+56.2642),2)
+      
       print("Suhu dalam Celcius={}".format(temp_c))
       print("Suhu dalam Fahrenheit={}".format(temp_f))
       print("pH Air={}".format(pH))
       print("TDS={}".format(tds))
+
+      telemetry = {
+        "temperature" : temp_c,
+        "pH" : pH,
+        "TDS" : tds,
+      }
+
+      client.send_telemetry(telemetry)
       time.sleep(2)
 
 while True:
