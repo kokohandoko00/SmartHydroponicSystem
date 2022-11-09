@@ -34,7 +34,7 @@ def pump(ppm,base):
       GPIO.output(17, GPIO.HIGH)
       GPIO.output(17, GPIO.LOW)
       print("ONE")
-      time.sleep(2)
+      time.sleep(600) #agar pompa hanya bisa berjalan setiap 10 menit pendeteksian
     if base>=7:
       #case if two relay channel activated
       GPIO.setup(27, GPIO.OUT) 
@@ -44,7 +44,7 @@ def pump(ppm,base):
       GPIO.output(22, GPIO.HIGH)
       GPIO.output(22, GPIO.LOW)
       print("TWO")
-      time.sleep(2)
+      time.sleep(600) #agar pompa hanya bisa berjalan setiap 10 menit pendeteksian
       #case if only one relay channel activated. with this option, it should have configured on wire
       # GPIO.setup(27, GPIO.OUT) 
       # GPIO.output(27, GPIO.HIGH)
@@ -108,7 +108,7 @@ def read_temp():
 
       client.send_telemetry(telemetry)
       pump(tds,pH)
-      time.sleep(2)
+      time.sleep(2) 
 
 while True:
  print(read_temp())
