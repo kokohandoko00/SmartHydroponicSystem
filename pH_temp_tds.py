@@ -9,9 +9,9 @@ from adafruit_ads1x15.analog_in import AnalogIn
 from config import config
 import RPi.GPIO as GPIO
 
-from tb_device_mqtt import TBDeviceMqttClient, TBPublishInfo
+#from tb_device_mqtt import TBDeviceMqttClient, TBPublishInfo
 
-client = TBDeviceMqttClient(config.THINGSBOARD_HOST, port=config.THINGSBOARD_MQTT_PORT, username=config.THINGSBOARD_MQTT_USERNAME, password=config.THINGSBOARD_MQTT_PASSWORD, client_id=config.THINGSBOARD_MQTT_CLIENT_ID)
+#client = TBDeviceMqttClient(config.THINGSBOARD_HOST, port=config.THINGSBOARD_MQTT_PORT, username=config.THINGSBOARD_MQTT_USERNAME, password=config.THINGSBOARD_MQTT_PASSWORD, client_id=config.THINGSBOARD_MQTT_CLIENT_ID)
 
 i2c = busio.I2C(board.SCL, board.SDA)
 ads = ADS.ADS1115(i2c)
@@ -33,8 +33,8 @@ def pump(ppm,base):
       GPIO.setup(17, GPIO.OUT) 
       GPIO.output(17, GPIO.HIGH)
       GPIO.output(17, GPIO.LOW)
-      print("ONE")
-      time.sleep(600) #agar pompa hanya bisa berjalan setiap 10 menit pendeteksian
+      #print("ONE")
+      time.sleep(2) #agar pompa hanya bisa berjalan setiap 10 menit pendeteksian
     if base>=7:
       #case if two relay channel activated
       GPIO.setup(27, GPIO.OUT) 
@@ -43,15 +43,17 @@ def pump(ppm,base):
       GPIO.setup(22, GPIO.OUT) 
       GPIO.output(22, GPIO.HIGH)
       GPIO.output(22, GPIO.LOW)
-      print("TWO")
-      time.sleep(600) #agar pompa hanya bisa berjalan setiap 10 menit pendeteksian
+      #print("TWO")
+      time.sleep(2) #agar pompa hanya bisa berjalan setiap 10 menit pendeteksian
       #case if only one relay channel activated. with this option, it should have configured on wire
       # GPIO.setup(27, GPIO.OUT) 
       # GPIO.output(27, GPIO.HIGH)
       # GPIO.output(27, GPIO.LOW)
       # print("TWO")
       # time.sleep(2)
-
+    #if KeyboardInterrupt:
+    #  GPIO.cleanup()
+      
 def read_temp_raw():
     f = open(device_file, 'r')
     lines = f.readlines()
@@ -100,13 +102,13 @@ def read_temp():
       print("pH Air={}".format(pH))
       print("TDS={}".format(tds))
 
-      telemetry = {
-        "temperature" : temp_c,
-        "pH" : pH,
-        "TDS" : tds,
-      }
+     # telemetry = {
+     #   "temperature" : temp_c,
+     #   "pH" : pH,
+     #   "TDS" : tds,
+     # }
 
-      client.send_telemetry(telemetry)
+     # client.send_telemetry(telemetry)
       pump(tds,pH)
       time.sleep(2) 
 
