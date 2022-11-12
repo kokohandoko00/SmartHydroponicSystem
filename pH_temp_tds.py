@@ -8,6 +8,8 @@ import adafruit_ads1x15.ads1115 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
 from config import config
 import RPi.GPIO as GPIO
+from signal import signal, SIGTERM, SIGHUP, pause
+from rpi_lcd import LCD
 
 #from tb_device_mqtt import TBDeviceMqttClient, TBPublishInfo
 
@@ -15,6 +17,7 @@ import RPi.GPIO as GPIO
 
 i2c = busio.I2C(board.SCL, board.SDA)
 ads = ADS.ADS1115(i2c)
+lcd =LCD()
 
 channel_0 = AnalogIn(ads, ADS.P0)
 channel_1 = AnalogIn(ads, ADS.P1)
@@ -27,6 +30,16 @@ device_folder = glob.glob(base_dir + '28-030794972bbe')[0]
 device_file = device_folder + '/w1_slave'
 
 GPIO.setmode(GPIO.BCM)
+
+def safe_exit(signum, frame):
+    exit(1)
+
+def display(temp,ph,tds):
+  signal(SIGTERM, safe_exit)
+  signal(SIGHUP, safe_exit)
+  lcd.text("Suhu={}".format(temp),1,'left')
+  lcd.text("pH={}".format(ph), 1,'right')
+  lcd.text("TDS={}".format(tds),2,'centre')
 
 def pump(ppm,base):
     if ppm<=1050:
@@ -102,6 +115,7 @@ def read_temp():
      # }
 
      # client.send_telemetry(telemetry)
+      display(temp_c,pH,tds)
       pump(tds,pH)
       time.sleep(2) 
 
