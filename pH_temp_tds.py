@@ -65,7 +65,7 @@ def read_temp_raw():
     f.close()
     return lines
 
-def read_temp():
+def read_sensor():
     while True:
       
       #temperature
@@ -118,5 +118,5 @@ def read_temp():
       time.sleep(2) 
 
 while True:
- print(read_temp())
+ print(read_sensor())
  time.sleep(1)
