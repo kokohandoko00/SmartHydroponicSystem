@@ -37,8 +37,7 @@ def safe_exit(signum, frame):
 def display(temp,ph,tds):
   signal(SIGTERM, safe_exit)
   signal(SIGHUP, safe_exit)
-  lcd.text("Suhu={}".format(temp),1,'left')
-  lcd.text("pH={}".format(ph), 1,'right')
+  lcd.text("Suhu={} pH={}".format(temp,ph),1,'centre')
   lcd.text("TDS={}".format(tds),2,'centre')
 
 def pump(ppm,base):
@@ -78,7 +77,7 @@ def read_temp():
       equals_pos = lines[1].find('t=')
       if equals_pos != -1:
           temp_string = lines[1][equals_pos+2:]
-          temp_c = float(temp_string) / 1000.0
+          temp_c = round((float(temp_string) / 1000.0),2)
           temp_f = temp_c * 9.0 / 5.0 + 32.0
       
       
@@ -113,7 +112,6 @@ def read_temp():
      #   "pH" : pH,
      #   "TDS" : tds,
      # }
-
      # client.send_telemetry(telemetry)
       display(temp_c,pH,tds)
       pump(tds,pH)
