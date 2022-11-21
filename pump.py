@@ -44,16 +44,17 @@ def pump(ppm,base):
   if ppm<=1050:
     GPIO.setup(17, GPIO.OUT) 
     GPIO.output(17, GPIO.LOW)
+    GPIO.setwarnings(False)
     time.sleep(2)
-    GPIO.output(17, GPIO.HIGH)
+    GPIO.output(17,GPIO.HIGH)
     print("ONE")
       #GPIO.cleanup()
   if base>=9:
       #case if two relay channel activated
     GPIO.setup(27, GPIO.OUT) 
     GPIO.output(27, GPIO.LOW)
-    time.sleep(1) 
-    GPIO.output(27, GPIO.HIGH)
+    GPIO.setwarnings(False)
+    time.sleep(2)
     print("TWO")
     # GPIO.cleanup()
 

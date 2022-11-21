@@ -15,9 +15,9 @@ from rpi_lcd import LCD
 
 #client = TBDeviceMqttClient(config.THINGSBOARD_HOST, port=config.THINGSBOARD_MQTT_PORT, username=config.THINGSBOARD_MQTT_USERNAME, password=config.THINGSBOARD_MQTT_PASSWORD, client_id=config.THINGSBOARD_MQTT_CLIENT_ID)
 
-i2c = busio.I2C(board.SCL, board.SDA)
-ads = ADS.ADS1115(i2c)
-lcd =LCD()
+i2c_1 = busio.I2C(board.SCL, board.SDA)
+ads = ADS.ADS1115(i2c_1)
+lcd = LCD(bus=2)
 
 channel_0 = AnalogIn(ads, ADS.P0)
 channel_1 = AnalogIn(ads, ADS.P1)
@@ -43,21 +43,25 @@ def display(temp,ph,tds):
 def pump(ppm,base):
     if ppm<=1050:
       GPIO.setup(17, GPIO.OUT) 
-      GPIO.output(17, GPIO.LOW)
-      time.sleep(2)
       GPIO.output(17, GPIO.HIGH)
-      print("ONE")
+      time.sleep(2)
+      GPIO.output(17, GPIO.LOW)
+      time.sleep(1)
+      GPIO.output(17, GPIO.HIGH)
+      # print("ONE")
       #GPIO.cleanup()
     if base>=9:
       #case if two relay channel activated
-      GPIO.setup(27, GPIO.OUT) 
-      GPIO.output(27, GPIO.LOW)
+      GPIO.setup(18, GPIO.OUT) 
+      GPIO.output(18, GPIO.HIGH)
       time.sleep(1) 
-      GPIO.output(27, GPIO.HIGH)
-      print("TWO")
-      # GPIO.cleanup()
-    #if KeyboardInterrupt:
-      #  GPIO.cleanup()
+      GPIO.output(18, GPIO.LOW)
+      time.sleep(1)
+      GPIO.output(18, GPIO.HIGH)
+      # print("TWO")
+      #GPIO.cleanup()
+    # if ppm>1050 or base < 9:
+      #GPIO.cleanup()
       
 def read_temp_raw():
     f = open(device_file, 'r')
