@@ -50,7 +50,7 @@ def pump(ppm,base):
       GPIO.output(17, GPIO.HIGH)
       # print("ONE")
       #GPIO.cleanup()
-    if base>=9:
+    if base>=7:
       #case if two relay channel activated
       GPIO.setup(18, GPIO.OUT) 
       GPIO.output(18, GPIO.HIGH)
@@ -60,7 +60,9 @@ def pump(ppm,base):
       GPIO.output(18, GPIO.HIGH)
       # print("TWO")
       #GPIO.cleanup()
-    # if ppm>1050 or base < 9:
+    if ppm>1050 or base < 7:
+      GPIO.output(17, GPIO.HIGH)
+      GPIO.output(18, GPIO.HIGH)
       #GPIO.cleanup()
       
 def read_temp_raw():
