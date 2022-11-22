@@ -6,7 +6,7 @@ import busio
 import sys
 import adafruit_ads1x15.ads1115 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
-import config
+from config import config
 import RPi.GPIO as GPIO
 from signal import signal, SIGTERM, SIGHUP, pause
 from tb_device_mqtt import TBDeviceMqttClient, TBPublishInfo
