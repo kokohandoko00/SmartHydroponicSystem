@@ -46,15 +46,15 @@ class SmartHydroponic(object):
         self.lcd.text("TDS={}".format(tds),2,'centre')
 
     def pump(self, ppm, base):
-        if ppm<=1050:
-            GPIO.setup(TDS_PIN, GPIO.OUT) 
-            GPIO.output(TDS_PIN, GPIO.HIGH)
-            time.sleep(1)
-            GPIO.output(TDS_PIN, GPIO.LOW)
-            time.sleep(1)
-            GPIO.output(TDS_PIN, GPIO.HIGH)
-            # print("ONE")
-            #GPIO.cleanup()
+        # if ppm<=600:
+        #     GPIO.setup(TDS_PIN, GPIO.OUT) 
+        #     GPIO.output(TDS_PIN, GPIO.HIGH)
+        #     time.sleep(1)
+        #     GPIO.output(TDS_PIN, GPIO.LOW)
+        #     time.sleep(1)
+        #     GPIO.output(TDS_PIN, GPIO.HIGH)
+        #     # print("ONE")
+        #     #GPIO.cleanup()
         if base>=7:
             #case if two relay channel activated
             GPIO.setup(PH_PIN, GPIO.OUT) 
