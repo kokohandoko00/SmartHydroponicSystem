@@ -10,6 +10,7 @@ from config import config
 import RPi.GPIO as GPIO
 from signal import signal, SIGTERM, SIGHUP, pause
 from rpi_lcd import LCD
+import random
 
 #from tb_device_mqtt import TBDeviceMqttClient, TBPublishInfo
 
@@ -17,9 +18,9 @@ from rpi_lcd import LCD
 
 i2c_1 = busio.I2C(board.SCL, board.SDA)
 ads = ADS.ADS1115(i2c_1)
-lcd = LCD(bus=2)
+lcd = LCD(bus=3)
 
-channel_0 = AnalogIn(ads, ADS.P0)
+channel_0 = AnalogIn(ads, ADS.P3)
 channel_1 = AnalogIn(ads, ADS.P1)
 
 os.system('modprobe w1-gpio')
@@ -91,11 +92,13 @@ def read_sensor():
       
       buf_1 = list()
       for i in range(10): # Take 10 samples
-          buf_1.append(channel_1.voltage)
+            buf_1.append(random.uniform(7.0, 8.0))
+            #buf_1.append(channel_1.voltage)
       buf_1.sort() # Sort samples and discard highest and lowest
       buf_1 = buf_1[2:-2]
       avg = round((sum(map(float,buf_1))/6),2) # Get average value from remaining 6
-      pH= round((-8.475*avg+38.7575),2)
+      pH = avg
+      # pH= round((-8.475*avg+38.7575),2)
       
     
       #tds
@@ -106,7 +109,8 @@ def read_sensor():
       buf_0.sort() # Sort samples and discard highest and lowest
       buf_0 = buf_0[2:-2]
       raw = round((sum(map(float,buf_0))/6),2)
-      tds = round((407.27*raw+56.2642),2)
+      tds = raw
+      tds = round((1395*raw-1776.35),2)
       
       print("Suhu dalam Celcius={}".format(temp_c))
       print("Suhu dalam Fahrenheit={}".format(temp_f))

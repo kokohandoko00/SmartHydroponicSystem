@@ -22,10 +22,11 @@ client.connect()
 while True:
     telemetry = {
         "temperature" : random.uniform(15.0, 40.0),
-        "pH" : random.uniform(0.0, 14.0),
+        "pH" : random.uniform(7.0, 8.0),
         "TDS" : random.uniform(0.0, 1000.0),
     }
     client.send_telemetry(telemetry)
+    print(telemetry) 
     time.sleep(4.0)
     
 

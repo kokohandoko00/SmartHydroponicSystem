@@ -1,0 +1,6 @@
+tb-mqtt-client
+adafruit-circuitpython-ads1x15
+rpi-lcd
+picamera
+RPi.GPIO
+apscheduler

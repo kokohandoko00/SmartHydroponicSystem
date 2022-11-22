@@ -9,12 +9,12 @@ import io
 from PIL import Image
 
 camera = picamera.PiCamera()
-camera.resolution = (1280, 720)
+camera.resolution = (640, 360)
 camera.start_preview()
 
-client = TBDeviceMqttClient(config.THINGSBOARD_HOST, port=config.THINGSBOARD_MQTT_PORT, username=config.THINGSBOARD_MQTT_USERNAME, password=config.THINGSBOARD_MQTT_PASSWORD, client_id=config.THINGSBOARD_MQTT_CLIENT_ID)
+#client = TBDeviceMqttClient(config.THINGSBOARD_HOST, port=config.THINGSBOARD_MQTT_PORT, username=config.THINGSBOARD_MQTT_USERNAME, password=config.THINGSBOARD_MQTT_PASSWORD, client_id=config.THINGSBOARD_MQTT_CLIENT_ID)
 # Connect to ThingsBoard
-client.connect()
+#client.connect()
 
 while True:
     camera_output = io.BytesIO()
@@ -24,7 +24,7 @@ while True:
     # image = image.resize((320,180), Image.ANTIALIAS)
 
     camera_output = io.BytesIO()
-    image.save(camera_output, optimize=True, quality=60, format="jpeg")
+    image.save(camera_output, optimize=True, quality=50, format="jpeg")
 
     camera_output_encoded = base64.b64encode(camera_output.getvalue())
 
@@ -32,6 +32,7 @@ while True:
         "camera_encoded" : camera_output_encoded.decode(),
     }
 
-    client.send_telemetry(telemetry)
+    # client.send_telemetry(telemetry)
+    print(camera_output_encoded.decode()[:100])
     print("test")
     time.sleep(2.0) 
