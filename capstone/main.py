@@ -38,7 +38,9 @@ class SmartHydroponic(object):
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(LAMP_PIN, GPIO.OUT) 
+        GPIO.setup(LAMP_PIN, GPIO.OUT)
+        GPIO.setup(PH_PIN, GPIO.OUT)
+        GPIO.setup(TDS_PIN, GPIO.OUT)
 
         self.client = TBDeviceMqttClient(config.THINGSBOARD_HOST, port=config.THINGSBOARD_MQTT_PORT, username=config.THINGSBOARD_MQTT_USERNAME, password=config.THINGSBOARD_MQTT_PASSWORD, client_id=config.THINGSBOARD_MQTT_CLIENT_ID)
         # Connect to ThingsBoard
@@ -53,6 +55,18 @@ class SmartHydroponic(object):
             lamp_state = request_body["params"]
             GPIO.output(LAMP_PIN, GPIO.LOW if lamp_state else GPIO.HIGH)
             self.client.send_rpc_reply(request_id, lamp_state)
+        elif request_body["method"] == "pHPumpCommand":
+            GPIO.output(PH_PIN, GPIO.HIGH)
+            time.sleep(1) 
+            GPIO.output(PH_PIN, GPIO.LOW)
+            time.sleep(1)
+            GPIO.output(PH_PIN, GPIO.HIGH)
+        elif request_body["method"] == "tdsPumpCommand":
+            GPIO.output(TDS_PIN, GPIO.HIGH)
+            time.sleep(1)
+            GPIO.output(TDS_PIN, GPIO.LOW)
+            time.sleep(1)
+            GPIO.output(TDS_PIN, GPIO.HIGH)
 
     def safe_exit(self, signum, frame):
         exit(1)
@@ -66,7 +80,6 @@ class SmartHydroponic(object):
     def pump(self, ppm, base):
         print(f"ppm {ppm} base {base}")
         if ppm<=1050:
-            GPIO.setup(TDS_PIN, GPIO.OUT) 
             GPIO.output(TDS_PIN, GPIO.HIGH)
             time.sleep(1)
             GPIO.output(TDS_PIN, GPIO.LOW)
@@ -76,7 +89,6 @@ class SmartHydroponic(object):
             #GPIO.cleanup()
         if base>=9.0:
             #case if two relay channel activated
-            GPIO.setup(PH_PIN, GPIO.OUT) 
             GPIO.output(PH_PIN, GPIO.HIGH)
             time.sleep(1) 
             GPIO.output(PH_PIN, GPIO.LOW)
@@ -85,8 +97,6 @@ class SmartHydroponic(object):
             # print("TWO")
             #GPIO.cleanup()
         if ppm>1050 or base < 7:
-            GPIO.setup(TDS_PIN, GPIO.OUT)
-            GPIO.setup(PH_PIN, GPIO.OUT)  
             GPIO.output(TDS_PIN, GPIO.HIGH)
             GPIO.output(PH_PIN, GPIO.HIGH)
             #GPIO.cleanup()
