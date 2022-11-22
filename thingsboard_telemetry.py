@@ -2,8 +2,13 @@ from tb_device_mqtt import TBDeviceMqttClient, TBPublishInfo
 from config import config
 import random
 import time
+import RPi.GPIO as GPIO
+
+LAMP_PIN = 17
 
 lamp_state = False
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(LAMP_PIN, GPIO.OUT) 
 
 def on_server_side_rpc_request(request_id, request_body):
     print(request_id, request_body)
@@ -11,6 +16,7 @@ def on_server_side_rpc_request(request_id, request_body):
         client.send_rpc_reply(request_id, lamp_state)
     elif request_body["method"] == "setLampValue":
         lamp_state = request_body["params"]
+        GPIO.output(LAMP_PIN, GPIO.LOW if lamp_state else GPIO.HIGH)
         client.send_rpc_reply(request_id, lamp_state)
 
 
