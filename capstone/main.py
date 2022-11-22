@@ -15,7 +15,6 @@ import random
 
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
-GPIO.setmode(GPIO.BCM)
 
 LAMP_PIN = 17
 PH_PIN = 27
@@ -36,6 +35,10 @@ class SmartHydroponic(object):
         self.base_dir = '/sys/bus/w1/devices/'
         self.device_folder = glob.glob(self.base_dir + '28-030794972bbe')[0]
         self.device_file = self.device_folder + '/w1_slave'
+
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(LAMP_PIN, GPIO.OUT) 
 
         self.client = TBDeviceMqttClient(config.THINGSBOARD_HOST, port=config.THINGSBOARD_MQTT_PORT, username=config.THINGSBOARD_MQTT_USERNAME, password=config.THINGSBOARD_MQTT_PASSWORD, client_id=config.THINGSBOARD_MQTT_CLIENT_ID)
         # Connect to ThingsBoard
