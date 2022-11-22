@@ -100,7 +100,7 @@ class SmartHydroponic(object):
         avg = round((sum(map(float,buf_1))/6),2) # Get average value from remaining 6
         pH = avg
         # pH= round((-8.475*avg+38.7575),2)
-        return pH
+        return pH, avg
 
     def read_tds(self):
         buf_0 = list()
@@ -112,7 +112,7 @@ class SmartHydroponic(object):
         tds = raw
         # tds = round((1395*raw-1776.35),2)
 
-        return tds
+        return tds, raw
         
 
     def read_sensor(self):
@@ -123,16 +123,16 @@ class SmartHydroponic(object):
         
         #pH
         
-        pH = self.read_pH()
+        pH, _ = self.read_pH()
         
         #tds
 
-        tds = self.read_tds()
+        tds, raw_tds = self.read_tds()
         
         print(f"Suhu dalam Celcius = {temp_c}")
         # print("Suhu dalam Fahrenheit={}".format(temp_f))
         print(f"pH Air = {pH}")
-        print(f"TDS = {tds}")
+        print(f"TDS = {tds} (Raw {raw_tds})")
 
         # telemetry = {
         #   "temperature" : temp_c,
