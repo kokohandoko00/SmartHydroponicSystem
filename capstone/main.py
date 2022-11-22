@@ -162,4 +162,4 @@ class SmartHydroponic(object):
         self.client.send_telemetry(telemetry)
         self.display(temp_c,pH,tds)
         # self.pump(tds, pH)
-        time.sleep(2) 
+        time.sleep(1) 
