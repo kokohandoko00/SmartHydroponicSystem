@@ -110,7 +110,7 @@ class SmartHydroponic(object):
         buf_0 = buf_0[2:-2]
         raw = round((sum(map(float,buf_0))/6),2)
         tds = raw
-        tds = round((1395*raw-1776.35),2)
+        # tds = round((1395*raw-1776.35),2)
 
         return tds
         
@@ -129,10 +129,10 @@ class SmartHydroponic(object):
 
         tds = self.read_tds()
         
-        print("Suhu dalam Celcius={}".format(temp_c))
+        print(f"Suhu dalam Celcius = {temp_c}")
         # print("Suhu dalam Fahrenheit={}".format(temp_f))
-        print("pH Air={}".format(pH))
-        print("TDS={}".format(tds))
+        print(f"pH Air = {pH}")
+        print(f"TDS = {tds}")
 
         # telemetry = {
         #   "temperature" : temp_c,
