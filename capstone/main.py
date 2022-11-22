@@ -135,7 +135,7 @@ class SmartHydroponic(object):
         # pH= round((-8.475*avg+38.7575),2)
         return pH, avg
 
-    def read_tds(self):
+    def read_tds(self, temperature):
         buf_0 = list()
         for i in range(10): # Take 10 samples
             buf_0.append(self.channel_0.voltage)
@@ -143,7 +143,10 @@ class SmartHydroponic(object):
         buf_0 = buf_0[2:-2]
         raw = round((sum(map(float,buf_0))/6),2)
         tds = raw
-        tds = round((1360.45*raw-1070.29),2)
+        # tds = round((1360.45*raw-1070.29),2)
+        compensation_coefficient = 1.0+0.02*(temperature-25.0)
+        compensation_voltage = raw/compensation_coefficient
+        tds = (133.42*compensation_voltage*compensation_voltage*compensation_voltage - 255.86*compensation_voltage*compensation_voltage + 857.39*compensation_voltage)*0.5
 
         return tds, raw
         
@@ -160,7 +163,7 @@ class SmartHydroponic(object):
         
         #tds
 
-        tds, raw_tds = self.read_tds()
+        tds, raw_tds = self.read_tds(temp_c)
         
         print(f"Suhu dalam Celcius = {temp_c}")
         # print("Suhu dalam Fahrenheit={}".format(temp_f))
