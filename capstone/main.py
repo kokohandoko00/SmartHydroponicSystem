@@ -125,7 +125,7 @@ class SmartHydroponic(object):
         tds = self.read_tds()
         
         print("Suhu dalam Celcius={}".format(temp_c))
-        print("Suhu dalam Fahrenheit={}".format(temp_f))
+        # print("Suhu dalam Fahrenheit={}".format(temp_f))
         print("pH Air={}".format(pH))
         print("TDS={}".format(tds))
 
