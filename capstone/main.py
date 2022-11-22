@@ -9,6 +9,7 @@ from adafruit_ads1x15.analog_in import AnalogIn
 import config
 import RPi.GPIO as GPIO
 from signal import signal, SIGTERM, SIGHUP, pause
+from tb_device_mqtt import TBDeviceMqttClient, TBPublishInfo
 from rpi_lcd import LCD
 import random
 
@@ -35,6 +36,20 @@ class SmartHydroponic(object):
         self.base_dir = '/sys/bus/w1/devices/'
         self.device_folder = glob.glob(self.base_dir + '28-030794972bbe')[0]
         self.device_file = self.device_folder + '/w1_slave'
+
+        self.client = TBDeviceMqttClient(config.THINGSBOARD_HOST, port=config.THINGSBOARD_MQTT_PORT, username=config.THINGSBOARD_MQTT_USERNAME, password=config.THINGSBOARD_MQTT_PASSWORD, client_id=config.THINGSBOARD_MQTT_CLIENT_ID)
+        # Connect to ThingsBoard
+        self.client.set_server_side_rpc_request_handler(self.on_server_side_rpc_request)
+        self.client.connect()
+
+    def on_server_side_rpc_request(self, request_id, request_body):
+        print(request_id, request_body)
+        if request_body["method"] == "getLampValue":
+            self.client.send_rpc_reply(request_id, lamp_state)
+        elif request_body["method"] == "setLampValue":
+            lamp_state = request_body["params"]
+            GPIO.output(LAMP_PIN, GPIO.LOW if lamp_state else GPIO.HIGH)
+            self.client.send_rpc_reply(request_id, lamp_state)
 
     def safe_exit(self, signum, frame):
         exit(1)
@@ -136,12 +151,12 @@ class SmartHydroponic(object):
         print(f"pH Air = {pH}")
         print(f"TDS = {tds} (Raw {raw_tds})")
 
-        # telemetry = {
-        #   "temperature" : temp_c,
-        #   "pH" : pH,
-        #   "TDS" : tds,
-        # }
-        # client.send_telemetry(telemetry)
+        telemetry = {
+          "temperature" : temp_c,
+          "pH" : random.uniform(7.0, 7.5),
+          "TDS" : tds,
+        }
+        self.client.send_telemetry(telemetry)
         self.display(temp_c,pH,tds)
-        self.pump(tds, pH)
+        # self.pump(tds, pH)
         time.sleep(2) 
