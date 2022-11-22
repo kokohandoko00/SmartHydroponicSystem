@@ -42,8 +42,8 @@ class SmartHydroponic(object):
         GPIO.setup(PH_PIN, GPIO.OUT)
         GPIO.setup(TDS_PIN, GPIO.OUT)
 
-        GPIO.output(TDS_PIN, GPIO.LOW)
-        GPIO.output(PH_PIN, GPIO.LOW)
+        GPIO.output(TDS_PIN, GPIO.HIGH)
+        GPIO.output(PH_PIN, GPIO.HIGH)
 
         self.client = TBDeviceMqttClient(config.THINGSBOARD_HOST, port=config.THINGSBOARD_MQTT_PORT, username=config.THINGSBOARD_MQTT_USERNAME, password=config.THINGSBOARD_MQTT_PASSWORD, client_id=config.THINGSBOARD_MQTT_CLIENT_ID)
         # Connect to ThingsBoard
