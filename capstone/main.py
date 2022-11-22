@@ -112,7 +112,7 @@ class SmartHydroponic(object):
         buf_0 = buf_0[2:-2]
         raw = round((sum(map(float,buf_0))/6),2)
         tds = raw
-        tds = round((1395*raw-1776.35),2)
+        tds = round((1360.45*raw-1070.29),2)
 
         return tds, raw
         
