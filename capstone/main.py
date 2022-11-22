@@ -77,7 +77,7 @@ class SmartHydroponic(object):
     def display(self, temp, ph, tds):
         signal(SIGTERM, self.safe_exit)
         signal(SIGHUP, self.safe_exit)
-        self.lcd.text("Suhu={} pH={}".format(temp, ph),1,'centre')
+        self.lcd.text("Suhu={} pH={}".format(round(temp,1), ph),1,'centre')
         self.lcd.text("TDS={}".format(round(tds,1)),2,'centre')
 
     def pump(self, ppm, base):
