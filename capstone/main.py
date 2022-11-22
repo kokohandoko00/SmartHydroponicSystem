@@ -62,13 +62,13 @@ class SmartHydroponic(object):
             GPIO.output(PH_PIN, GPIO.HIGH)
             time.sleep(1) 
             GPIO.output(PH_PIN, GPIO.LOW)
-            time.sleep(1)
+            time.sleep(2)
             GPIO.output(PH_PIN, GPIO.HIGH)
         elif request_body["method"] == "tdsPumpCommand":
             GPIO.output(TDS_PIN, GPIO.HIGH)
             time.sleep(1)
             GPIO.output(TDS_PIN, GPIO.LOW)
-            time.sleep(1)
+            time.sleep(2)
             GPIO.output(TDS_PIN, GPIO.HIGH)
 
     def safe_exit(self, signum, frame):
