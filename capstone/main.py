@@ -67,6 +67,8 @@ class SmartHydroponic(object):
             # print("TWO")
             #GPIO.cleanup()
         if ppm>1050 or base < 7:
+            GPIO.setup(TDS_PIN, GPIO.OUT)
+            GPIO.setup(PH_PIN, GPIO.OUT)  
             GPIO.output(TDS_PIN, GPIO.HIGH)
             GPIO.output(PH_PIN, GPIO.HIGH)
             #GPIO.cleanup()
