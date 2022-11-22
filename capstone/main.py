@@ -16,6 +16,10 @@ os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
 GPIO.setmode(GPIO.BCM)
 
+LAMP_PIN = 17
+PH_PIN = 27
+TDS_PIN = 18
+
 class SmartHydroponic(object):
     """
     Capstone Smart Hydroponic object
@@ -43,27 +47,27 @@ class SmartHydroponic(object):
 
     def pump(self, ppm, base):
         if ppm<=1050:
-            GPIO.setup(17, GPIO.OUT) 
-            GPIO.output(17, GPIO.HIGH)
-            time.sleep(2)
-            GPIO.output(17, GPIO.LOW)
+            GPIO.setup(TDS_PIN, GPIO.OUT) 
+            GPIO.output(TDS_PIN, GPIO.HIGH)
             time.sleep(1)
-            GPIO.output(17, GPIO.HIGH)
+            GPIO.output(TDS_PIN, GPIO.LOW)
+            time.sleep(1)
+            GPIO.output(TDS_PIN, GPIO.HIGH)
             # print("ONE")
             #GPIO.cleanup()
         if base>=7:
             #case if two relay channel activated
-            GPIO.setup(18, GPIO.OUT) 
-            GPIO.output(18, GPIO.HIGH)
+            GPIO.setup(PH_PIN, GPIO.OUT) 
+            GPIO.output(PH_PIN, GPIO.HIGH)
             time.sleep(1) 
-            GPIO.output(18, GPIO.LOW)
+            GPIO.output(PH_PIN, GPIO.LOW)
             time.sleep(1)
-            GPIO.output(18, GPIO.HIGH)
+            GPIO.output(PH_PIN, GPIO.HIGH)
             # print("TWO")
             #GPIO.cleanup()
         if ppm>1050 or base < 7:
-            GPIO.output(17, GPIO.HIGH)
-            GPIO.output(18, GPIO.HIGH)
+            GPIO.output(TDS_PIN, GPIO.HIGH)
+            GPIO.output(PH_PIN, GPIO.HIGH)
             #GPIO.cleanup()
       
     def read_temp_raw(self):
