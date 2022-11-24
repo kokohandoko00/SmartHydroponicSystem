@@ -134,8 +134,8 @@ class SmartHydroponic(object):
     def read_pH(self):
         buf_1 = list()
         for i in range(10): # Take 10 samples
-                buf_1.append(random.uniform(7.0, 8.0))
-                #buf_1.append(self.channel_1.voltage)
+            # buf_1.append(random.uniform(7.0, 8.0))
+            buf_1.append(self.channel_0.voltage)
         buf_1.sort() # Sort samples and discard highest and lowest
         buf_1 = buf_1[2:-2]
         avg = round((sum(map(float,buf_1))/6),2) # Get average value from remaining 6
@@ -145,7 +145,7 @@ class SmartHydroponic(object):
     def read_tds(self, temperature):
         buf_0 = list()
         for i in range(10): # Take 10 samples
-            buf_0.append(self.channel_0.voltage)
+            buf_0.append(self.channel_1.voltage)
         buf_0.sort() # Sort samples and discard highest and lowest
         buf_0 = buf_0[2:-2]
         raw = round((sum(map(float,buf_0))/6),2)
