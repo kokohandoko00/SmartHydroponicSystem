@@ -98,8 +98,8 @@ def read_sensor():
       buf_1.sort() # Sort samples and discard highest and lowest
       buf_1 = buf_1[2:-2]
       avg = round((sum(map(float,buf_1))/6),2) # Get average value from remaining 6
-      avg = (sum(map(float,buf_1))/6)
-      pH=round((-7.308*avg+33.443),1)
+      #avg = (sum(map(float,buf_1))/6)
+      #pH=round((-7.308*avg+33.443),1)
       #pH = 3.5*(avg*5/1024/6)
       # pH= round((-8.475*avg+38.7575),2)
       

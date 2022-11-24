@@ -139,8 +139,7 @@ class SmartHydroponic(object):
         buf_1.sort() # Sort samples and discard highest and lowest
         buf_1 = buf_1[2:-2]
         avg = round((sum(map(float,buf_1))/6),2) # Get average value from remaining 6
-        pH = avg
-        # pH= round((-8.475*avg+38.7575),2)
+        pH=round((-7.308*avg+33.443),1)
         return pH, avg
 
     def read_tds(self, temperature):
