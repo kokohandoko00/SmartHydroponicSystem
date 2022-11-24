@@ -20,7 +20,7 @@ i2c_1 = busio.I2C(board.SCL, board.SDA)
 ads = ADS.ADS1115(i2c_1)
 lcd = LCD(bus=3)
 
-channel_0 = AnalogIn(ads, ADS.P3)
+channel_0 = AnalogIn(ads, ADS.P0)
 channel_1 = AnalogIn(ads, ADS.P1)
 
 os.system('modprobe w1-gpio')
@@ -35,35 +35,35 @@ GPIO.setmode(GPIO.BCM)
 def safe_exit(signum, frame):
     exit(1)
 
-def display(temp,ph,tds):
-  signal(SIGTERM, safe_exit)
-  signal(SIGHUP, safe_exit)
-  lcd.text("Suhu={} pH={}".format(temp,ph),1,'centre')
-  lcd.text("TDS={}".format(tds),2,'centre')
+#def display(temp,ph,tds):
+#  signal(SIGTERM, safe_exit)
+#  signal(SIGHUP, safe_exit)
+#  lcd.text("Suhu={} pH={}".format(temp,ph),1,'centre')
+#  lcd.text("TDS={}".format(tds),2,'centre')
 
-def pump(ppm,base):
-    if ppm<=1050:
-      GPIO.setup(17, GPIO.OUT) 
-      GPIO.output(17, GPIO.HIGH)
-      time.sleep(2)
-      GPIO.output(17, GPIO.LOW)
-      time.sleep(1)
-      GPIO.output(17, GPIO.HIGH)
+#def pump(ppm,base):
+#    if ppm<=1050:
+#      GPIO.setup(17, GPIO.OUT) 
+#      GPIO.output(17, GPIO.HIGH)
+#      time.sleep(2)
+#      GPIO.output(17, GPIO.LOW)
+#      time.sleep(1)
+#      GPIO.output(17, GPIO.HIGH)
       # print("ONE")
       #GPIO.cleanup()
-    if base>=7:
+#    if base>=7:
       #case if two relay channel activated
-      GPIO.setup(18, GPIO.OUT) 
-      GPIO.output(18, GPIO.HIGH)
-      time.sleep(1) 
-      GPIO.output(18, GPIO.LOW)
-      time.sleep(1)
-      GPIO.output(18, GPIO.HIGH)
+#      GPIO.setup(18, GPIO.OUT) 
+#      GPIO.output(18, GPIO.HIGH)
+#      time.sleep(1) 
+#      GPIO.output(18, GPIO.LOW)
+#      time.sleep(1)
+#      GPIO.output(18, GPIO.HIGH)
       # print("TWO")
       #GPIO.cleanup()
-    if ppm>1050 or base < 7:
-      GPIO.output(17, GPIO.HIGH)
-      GPIO.output(18, GPIO.HIGH)
+#    if ppm>1050 or base < 7:
+#      GPIO.output(17, GPIO.HIGH)
+#      GPIO.output(18, GPIO.HIGH)
       #GPIO.cleanup()
       
 def read_temp_raw():
@@ -89,15 +89,18 @@ def read_sensor():
       
       
       #pH
+          
       
       buf_1 = list()
       for i in range(10): # Take 10 samples
-            buf_1.append(random.uniform(7.0, 8.0))
-            #buf_1.append(channel_1.voltage)
+            #buf_1.append(random.uniform(7.0, 8.0))
+            buf_1.append(channel_0.voltage)
       buf_1.sort() # Sort samples and discard highest and lowest
       buf_1 = buf_1[2:-2]
       avg = round((sum(map(float,buf_1))/6),2) # Get average value from remaining 6
-      pH = avg
+      avg = (sum(map(float,buf_1))/6)
+      pH=round((-7.308*avg+33.443),1)
+      #pH = 3.5*(avg*5/1024/6)
       # pH= round((-8.475*avg+38.7575),2)
       
     
@@ -105,12 +108,13 @@ def read_sensor():
 
       buf_0 = list()
       for i in range(10): # Take 10 samples
-          buf_0.append(channel_0.voltage)
+          buf_0.append(channel_1.voltage)
       buf_0.sort() # Sort samples and discard highest and lowest
       buf_0 = buf_0[2:-2]
       raw = round((sum(map(float,buf_0))/6),2)
-      tds = raw
-      tds = round((1395*raw-1776.35),2)
+      compensation_coefficient = 1.0+0.02*(temp_c-25.0)
+      compensation_voltage = raw/compensation_coefficient
+      tds = (133.42*compensation_voltage*compensation_voltage*compensation_voltage - 255.86*compensation_voltage*compensation_voltage + 857.39*compensation_voltage)*0.5
       
       print("Suhu dalam Celcius={}".format(temp_c))
       print("Suhu dalam Fahrenheit={}".format(temp_f))
@@ -123,8 +127,8 @@ def read_sensor():
      #   "TDS" : tds,
      # }
      # client.send_telemetry(telemetry)
-      display(temp_c,pH,tds)
-      pump(tds,pH)
+      #display(temp_c,pH,tds)
+     # pump(tds,pH)
       time.sleep(2) 
 
 while True:

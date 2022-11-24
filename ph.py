@@ -23,6 +23,7 @@ def read_voltage(channel):
         #pH = (-8.475*avg+38.7575)
         pH=(-8.475*avg+38.7575)
         print(round(pH,2))
+        print(avg)
         #print(avg)
         time.sleep(2)
 

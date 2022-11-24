@@ -12,6 +12,10 @@ from signal import signal, SIGTERM, SIGHUP, pause
 from tb_device_mqtt import TBDeviceMqttClient, TBPublishInfo
 from rpi_lcd import LCD
 import random
+import picamera
+import base64
+import io
+from PIL import Image
 
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
@@ -49,6 +53,9 @@ class SmartHydroponic(object):
         # Connect to ThingsBoard
         self.client.set_server_side_rpc_request_handler(self.on_server_side_rpc_request)
         self.client.connect()
+        
+        self.camera = picamera.PiCamera()
+        self.camera.resolution = (640, 360)
 
     def on_server_side_rpc_request(self, request_id, request_body):
         print(request_id, request_body)
@@ -150,6 +157,20 @@ class SmartHydroponic(object):
 
         return tds, raw
         
+    def read_camera(self):
+        camera_output = io.BytesIO()
+        self.camera.capture(camera_output, format="jpeg")
+
+        image = Image.open(camera_output)
+        # image = image.resize((320,180), Image.ANTIALIAS)
+
+        camera_output = io.BytesIO()
+        image.save(camera_output, optimize=True, quality=50, format="jpeg")
+        
+        camera_output_encoded = base64.b64encode(camera_output.getvalue()).decode()
+        
+        return camera_output_encoded
+        
 
     def read_sensor(self):
         
@@ -165,6 +186,10 @@ class SmartHydroponic(object):
 
         tds, raw_tds = self.read_tds(temp_c)
         
+        #camera
+        
+        camera_output = self.read_camera()
+        
         print(f"Suhu dalam Celcius = {temp_c}")
         # print("Suhu dalam Fahrenheit={}".format(temp_f))
         print(f"pH Air = {pH}")
@@ -174,6 +199,7 @@ class SmartHydroponic(object):
           "temperature" : temp_c,
           "pH" : random.uniform(7.0, 7.5),
           "TDS" : tds,
+          "camera" : camera_output,
         }
         self.client.send_telemetry(telemetry)
         self.display(temp_c,pH,tds)
