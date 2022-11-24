@@ -197,7 +197,7 @@ class SmartHydroponic(object):
 
         telemetry = {
           "temperature" : temp_c,
-          "pH" : random.uniform(7.0, 7.5),
+          "pH" : pH,
           "TDS" : tds,
           "camera" : camera_output,
         }
