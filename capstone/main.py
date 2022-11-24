@@ -31,6 +31,7 @@ class SmartHydroponic(object):
         self.lcd = LCD(bus=3)
         self.channel_0 = AnalogIn(self.ads, ADS.P3)
         self.channel_1 = AnalogIn(self.ads, ADS.P1)
+        self.lamp_state = False
 
         self.base_dir = '/sys/bus/w1/devices/'
         self.device_folder = glob.glob(self.base_dir + '28-030794972bbe')[0]
@@ -53,11 +54,11 @@ class SmartHydroponic(object):
     def on_server_side_rpc_request(self, request_id, request_body):
         print(request_id, request_body)
         if request_body["method"] == "getLampValue":
-            self.client.send_rpc_reply(request_id, lamp_state)
+            self.client.send_rpc_reply(request_id, self.lamp_state)
         elif request_body["method"] == "setLampValue":
-            lamp_state = request_body["params"]
-            GPIO.output(LAMP_PIN, GPIO.LOW if lamp_state else GPIO.HIGH)
-            self.client.send_rpc_reply(request_id, lamp_state)
+            self.lamp_state = request_body["params"]
+            GPIO.output(LAMP_PIN, GPIO.LOW if self.lamp_state else GPIO.HIGH)
+            self.client.send_rpc_reply(request_id, self.lamp_state)
         elif request_body["method"] == "pHPumpCommand":
             GPIO.output(PH_PIN, GPIO.HIGH)
             time.sleep(1) 
