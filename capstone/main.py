@@ -98,6 +98,7 @@ class SmartHydroponic(object):
             if not self.tds_pump_state:
                 self.tds_pump_state = True
                 self.last_tds_pump_time = time.time()
+                print(f"Pumping A/B Mix TDS at {self.last_tds_pump_time}")
                 GPIO.output(TDS_PIN, GPIO.HIGH)
                 time.sleep(1)
                 GPIO.output(TDS_PIN, GPIO.LOW)
@@ -112,6 +113,7 @@ class SmartHydroponic(object):
             if not self.ph_pump_state:
                 self.ph_pump_state = True
                 self.last_ph_pump_time = time.time()
+                print(f"Pumping pH down at {self.last_ph_pump_time}")
                 GPIO.output(PH_PIN, GPIO.HIGH)
                 time.sleep(1) 
                 GPIO.output(PH_PIN, GPIO.LOW)
