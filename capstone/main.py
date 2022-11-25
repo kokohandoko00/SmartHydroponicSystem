@@ -36,6 +36,10 @@ class SmartHydroponic(object):
         self.channel_0 = AnalogIn(self.ads, ADS.P0)
         self.channel_1 = AnalogIn(self.ads, ADS.P1)
         self.lamp_state = False
+        self.tds_pump_state = False
+        self.last_tds_pump_time = time.time()
+        self.ph_pump_state = False
+        self.last_ph_pump_time = time.time()
 
         self.base_dir = '/sys/bus/w1/devices/'
         self.device_folder = glob.glob(self.base_dir + '28-030794972bbe')[0]
@@ -91,26 +95,36 @@ class SmartHydroponic(object):
     def pump(self, ppm, base):
         print(f"ppm {ppm} base {base}")
         if ppm<=1050:
-            GPIO.output(TDS_PIN, GPIO.HIGH)
-            time.sleep(1)
-            GPIO.output(TDS_PIN, GPIO.LOW)
-            time.sleep(1)
-            GPIO.output(TDS_PIN, GPIO.HIGH)
+            if not self.tds_pump_state:
+                self.tds_pump_state = True
+                self.last_tds_pump_time = time.time()
+                GPIO.output(TDS_PIN, GPIO.HIGH)
+                time.sleep(1)
+                GPIO.output(TDS_PIN, GPIO.LOW)
+                time.sleep(2)
+                GPIO.output(TDS_PIN, GPIO.HIGH)
+            elif self.tds_pump_state and (time.time()-self.last_tds_pump_time >= 60.0):
+                self.tds_pump_state = False
             # print("ONE")
             #GPIO.cleanup()
         if base>=9.0:
             #case if two relay channel activated
-            GPIO.output(PH_PIN, GPIO.HIGH)
-            time.sleep(1) 
-            GPIO.output(PH_PIN, GPIO.LOW)
-            time.sleep(1)
-            GPIO.output(PH_PIN, GPIO.HIGH)
+            if not self.ph_pump_state:
+                self.ph_pump_state = True
+                self.last_ph_pump_time = time.time()
+                GPIO.output(PH_PIN, GPIO.HIGH)
+                time.sleep(1) 
+                GPIO.output(PH_PIN, GPIO.LOW)
+                time.sleep(2)
+                GPIO.output(PH_PIN, GPIO.HIGH)
+            elif self.ph_pump_state and (time.time()-self.last_ph_pump_time >= 60.0):
+                self.ph_pump_state = False
             # print("TWO")
             #GPIO.cleanup()
-        if ppm>1050 or base < 7:
-            GPIO.output(TDS_PIN, GPIO.HIGH)
-            GPIO.output(PH_PIN, GPIO.HIGH)
-            #GPIO.cleanup()
+        # if ppm>1050 or base < 7:
+        #     GPIO.output(TDS_PIN, GPIO.HIGH)
+        #     GPIO.output(PH_PIN, GPIO.HIGH)
+        #     #GPIO.cleanup()
       
     def read_temp_raw(self):
         f = open(self.device_file, 'r')
