@@ -196,7 +196,7 @@ class SmartHydroponic(object):
         
         #pH
         
-        pH, _ = self.read_pH()
+        pH, raw_pH = self.read_pH()
         
         #tds
 
@@ -208,7 +208,7 @@ class SmartHydroponic(object):
         
         print(f"Suhu dalam Celcius = {temp_c}")
         # print("Suhu dalam Fahrenheit={}".format(temp_f))
-        print(f"pH Air = {pH}")
+        print(f"pH Air = {pH} (Raw {raw_pH})")
         print(f"TDS = {tds} (Raw {raw_tds})")
 
         telemetry = {
@@ -219,5 +219,5 @@ class SmartHydroponic(object):
         }
         self.client.send_telemetry(telemetry)
         self.display(temp_c,pH,tds)
-        # self.pump(tds, pH)
+        self.pump(tds, pH)
         time.sleep(1) 
