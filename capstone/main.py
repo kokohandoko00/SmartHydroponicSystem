@@ -94,7 +94,7 @@ class SmartHydroponic(object):
 
     def pump(self, ppm, base):
         print(f"ppm {ppm} base {base}")
-        if ppm<=1050:
+        if ppm <= 560.0:
             if not self.tds_pump_state:
                 self.tds_pump_state = True
                 self.last_tds_pump_time = time.time()
@@ -104,11 +104,11 @@ class SmartHydroponic(object):
                 GPIO.output(TDS_PIN, GPIO.LOW)
                 time.sleep(2)
                 GPIO.output(TDS_PIN, GPIO.HIGH)
-            elif self.tds_pump_state and (time.time()-self.last_tds_pump_time >= 60.0):
+            elif self.tds_pump_state and (time.time()-self.last_tds_pump_time >= 20.0):
                 self.tds_pump_state = False
             # print("ONE")
             #GPIO.cleanup()
-        if base>=9.0:
+        if base >= 7.0:
             #case if two relay channel activated
             if not self.ph_pump_state:
                 self.ph_pump_state = True
@@ -119,7 +119,7 @@ class SmartHydroponic(object):
                 GPIO.output(PH_PIN, GPIO.LOW)
                 time.sleep(2)
                 GPIO.output(PH_PIN, GPIO.HIGH)
-            elif self.ph_pump_state and (time.time()-self.last_ph_pump_time >= 60.0):
+            elif self.ph_pump_state and (time.time()-self.last_ph_pump_time >= 40.0):
                 self.ph_pump_state = False
             # print("TWO")
             #GPIO.cleanup()
