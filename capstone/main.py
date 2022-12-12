@@ -216,6 +216,9 @@ class SmartHydroponic(object):
           "pH" : pH,
           "TDS" : tds,
           "camera" : camera_output,
+          "pH_testing":4.01,
+          "tds_testing":96,
+          "temp_testing":25
         }
         self.client.send_telemetry(telemetry)
         self.display(temp_c,pH,tds)
